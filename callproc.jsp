@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*, java.text.*" %>
+<%@ page errorPage="error.jsp" %>
 <%
 String url = "jdbc:oracle:thin:@//DBHOST:1521/SERVICE";
 String user = "USER";
