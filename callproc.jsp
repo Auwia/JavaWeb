@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*" %>
+<%@ page import="java.sql.*, java.text.*" %>
 
 <%
 
@@ -13,27 +13,33 @@ try {
 
     Class.forName("oracle.jdbc.driver.OracleDriver");
 
-    conn = DriverManager.getConnection(url, user, password);
+    conn = DriverManager.getConnection(url,user,password);
 
-    cs = conn.prepareCall("{ call test_proc(?) }");
+    cs = conn.prepareCall("{ call test_proc(?,?) }");
 
-    cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+    // esempio data
+    String dateStr = "2025-03-19";
+
+    java.util.Date utilDate =
+        new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+
+    java.sql.Date sqlDate =
+        new java.sql.Date(utilDate.getTime());
+
+    cs.setDate(1, sqlDate);
+
+    cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 
     cs.execute();
 
-    String result = cs.getString(1);
+    String result = cs.getString(2);
 
-    out.println("<h2>Risultato:</h2>");
-    out.println(result);
+    out.println("Risultato: " + result);
 
 } catch(Exception e) {
 
     out.println("Errore: " + e);
 
-} finally {
-
-    if(cs != null) cs.close();
-    if(conn != null) conn.close();
 }
 
 %>
